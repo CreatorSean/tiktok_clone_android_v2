@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone_android/constants/gaps.dart';
 import 'package:tiktok_clone_android/features/authentication/widgets/form_button.dart';
 
@@ -23,12 +24,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     if (_formKey.currentState != null) {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
-        Navigator.of(context).pushAndRemoveUntil (
-          MaterialPageRoute(
-            builder: (context) => const InterestsScreen(),
-          ),
-          (route) => false,
-        );
+        context.goNamed(InterestsScreen.routeName);
         //textformfield의 onsaved 함수를 콜백하게됨
       }
     }

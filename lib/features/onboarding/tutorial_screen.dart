@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone_android/constants/gaps.dart';
-import 'package:tiktok_clone_android/features/utils.dart';
 import '../../constants/sizes.dart';
-import '../main_navigation/main_navigation_screen.dart';
 
 enum Direction { right, left }
 
@@ -43,12 +42,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
   }
 
   void _onEnterAppTap() {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const MainNavigationScreen(),
-      ),
-      (route) => false,
-    );
+    context.go("/home");
   }
 
   @override
@@ -112,25 +106,22 @@ class _TutorialScreenState extends State<TutorialScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: isDarkMode(context) ? Colors.black : Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: Sizes.size32,
-              bottom: Sizes.size64,
-              left: Sizes.size24,
-              right: Sizes.size24,
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(
+            top: Sizes.size32,
+            bottom: Sizes.size64,
+            left: Sizes.size24,
+            right: Sizes.size24,
+          ),
+          child: AnimatedOpacity(
+            opacity: _showinPage == Page.first ? 0 : 1,
+            duration: const Duration(
+              milliseconds: 300,
             ),
-            child: AnimatedOpacity(
-              opacity: _showinPage == Page.first ? 0 : 1,
-              duration: const Duration(
-                milliseconds: 300,
-              ),
-              child: CupertinoButton(
-                onPressed: _onEnterAppTap,
-                color: Theme.of(context).primaryColor,
-                child: const Text("Enter the app!"),
-              ),
+            child: CupertinoButton(
+              onPressed: _onEnterAppTap,
+              color: Theme.of(context).primaryColor,
+              child: const Text("Enter the app!"),
             ),
           ),
         ),

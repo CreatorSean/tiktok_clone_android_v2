@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone_android/constants/gaps.dart';
 import 'package:tiktok_clone_android/features/onboarding/interests_screen.dart';
 import 'package:tiktok_clone_android/features/utils.dart';
@@ -20,12 +21,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
   DateTime initialDate = DateTime.now();
 
   void _onNextTap() {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const InterestsScreen(),
-      ),
-      (route) => false,
-    );
+    context.goNamed(InterestsScreen.routeName);
   }
 
   @override
@@ -39,7 +35,6 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
         title: const Text(
           'Sign up',
         ),
@@ -85,7 +80,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
               ),
               cursorColor: Theme.of(context).primaryColor,
             ),
-            Gaps.v16,
+            Gaps.v28,
             GestureDetector(
               onTap: _onNextTap,
               child: const FormButton(

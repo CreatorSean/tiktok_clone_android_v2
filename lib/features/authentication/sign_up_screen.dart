@@ -13,43 +13,25 @@ class SignUpScreen extends StatelessWidget {
   static const routeURL = "/";
   static const routeName = "signUp";
   const SignUpScreen({super.key});
+
   final tDuration = const Duration(seconds: 1);
   final rDuration = const Duration(seconds: 1);
 
   void _onLoginTap(BuildContext context) async {
-    context.push(LoginScreen.routeName);
+    context.pushNamed(LoginScreen.routeName);
     //push a location onto the page stack => 이전 화면 위에 다른 화면을 올림
   }
 
   void _onEmailTap(BuildContext context) {
-    context.pushNamed(UsernameScreen.routeName);
+    // context.pushNamed(UsernameScreen.routeName);
     //context.go는 이전 화면 위에 다른 화면을 올리는 것이 아님
 
-    /* Navigator.of(context).push(
-      PageRouteBuilder(
-        transitionDuration: tDuration,
-        reverseTransitionDuration: rDuration,
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const UsernameScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          final offsetAnimation = Tween(
-            begin: const Offset(0, -1),
-            end: Offset.zero,
-          );
-          final opacityAnimation = Tween(
-            begin: 0.5,
-            end: 0.5,
-          ).animate(animation);
-          return SlideTransition(
-            position: offsetAnimation.animate(animation),
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
-          );
-        },
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const UsernameScreen(),
       ),
-    ); */
+    );
   }
 
   void onAppleTap(BuildContext context) {
