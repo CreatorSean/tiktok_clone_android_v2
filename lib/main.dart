@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:tiktok_clone_android/common/video_configuration/video_config.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tiktok_clone_android/features/videos/repos/video_playback_config_repo.dart';
+import 'package:tiktok_clone_android/features/videos/view_models/playback_config_vm.dart';
 import 'package:tiktok_clone_android/router.dart';
 import 'constants/sizes.dart';
 
@@ -14,7 +16,26 @@ void main() async {
   );
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-  runApp(const TikTokApp());
+
+  //sharedpreferences에 접근
+  final preferences = await SharedPreferences.getInstance();
+  //initialize Repository
+  //repository에 접근하려면 preferences가 필요하기 때문에 이 class의 preferences를 매개변수로 넘겨줌
+  final repository = VideoPlaybackConfigRepository(preferences);
+  runApp(
+    ProviderScope(
+      overrides: [
+        //원래 playbackConfigViewModel에서 provider를 생성해야하는데 repository를 매개변수로 사용할 수 없었음.
+        //그래서 unimplementedError를 throw했고 여기서sharedpreferences의 preferences를 사용하기 위해 providerscope의 overrides로 그 문제를 해결함
+        //(SharedPreferences는 main에서 await해야함)
+        //그래서 playbackConfigProvider에 playbackConfigViewModel에 repository를 매개변수로 해서 override한것임.
+        playbackConfigProvider.overrideWith(
+          () => PlaybackConfigViewModel(repository),
+        )
+      ],
+      child: const TikTokApp(),
+    ),
+  );
 }
 
 class TikTokApp extends StatelessWidget {
@@ -22,79 +43,71 @@ class TikTokApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          //다른 화면이 changenotifier를 어떻게 접근할까?
-          create: (context) => VideoConfig(),
+    return MaterialApp.router(
+      routerConfig: router,
+      debugShowCheckedModeBanner: false,
+      title: 'TikTok Clone',
+      themeMode: ThemeMode.system,
+      theme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.light,
+        textTheme: Typography.blackCupertino,
+        splashColor: Colors.transparent,
+        scaffoldBackgroundColor: Colors.white,
+        primaryColor: const Color(0xFFE9435A),
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Color(0xFFE9435A),
+          selectionColor: Color(0xFFE9435A),
         ),
-      ],
-      child: MaterialApp.router(
-        routerConfig: router,
-        debugShowCheckedModeBanner: false,
-        title: 'TikTok Clone',
-        themeMode: ThemeMode.system,
-        theme: ThemeData(
-          useMaterial3: true,
-          brightness: Brightness.light,
-          textTheme: Typography.blackCupertino,
-          splashColor: Colors.transparent,
-          scaffoldBackgroundColor: Colors.white,
-          primaryColor: const Color(0xFFE9435A),
-          textSelectionTheme: const TextSelectionThemeData(
-            cursorColor: Color(0xFFE9435A),
-            selectionColor: Color(0xFFE9435A),
-          ),
-          appBarTheme: const AppBarTheme(
-            centerTitle: true,
-            foregroundColor: Colors.black,
-            backgroundColor: Colors.white,
-            surfaceTintColor: Colors.white,
-            elevation: 0,
-            titleTextStyle: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w600,
-              fontSize: Sizes.size16 + Sizes.size2,
-            ),
-          ),
-          tabBarTheme: TabBarTheme(
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey.shade500,
-          ),
-          listTileTheme: const ListTileThemeData(
-            iconColor: Colors.black,
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          elevation: 0,
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: Sizes.size16 + Sizes.size2,
           ),
         ),
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          tabBarTheme: TabBarTheme(
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.grey.shade700,
+        tabBarTheme: TabBarTheme(
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.grey.shade500,
+        ),
+        listTileTheme: const ListTileThemeData(
+          iconColor: Colors.black,
+        ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        tabBarTheme: TabBarTheme(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.grey.shade700,
+        ),
+        scaffoldBackgroundColor: Colors.black,
+        textTheme: Typography.whiteMountainView,
+        primaryColor: const Color(0xFFE9435A),
+        brightness: Brightness.dark,
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Color(0xFFE9435A),
+          selectionColor: Color(0xFFE9435A),
+        ),
+        appBarTheme: AppBarTheme(
+          centerTitle: true,
+          backgroundColor: Colors.grey.shade900,
+          surfaceTintColor: Colors.grey.shade900,
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: Sizes.size16 + Sizes.size2,
           ),
-          scaffoldBackgroundColor: Colors.black,
-          textTheme: Typography.whiteMountainView,
-          primaryColor: const Color(0xFFE9435A),
-          brightness: Brightness.dark,
-          textSelectionTheme: const TextSelectionThemeData(
-            cursorColor: Color(0xFFE9435A),
-            selectionColor: Color(0xFFE9435A),
+          actionsIconTheme: IconThemeData(
+            color: Colors.grey.shade100,
           ),
-          appBarTheme: AppBarTheme(
-            centerTitle: true,
-            backgroundColor: Colors.grey.shade900,
-            surfaceTintColor: Colors.grey.shade900,
-            titleTextStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: Sizes.size16 + Sizes.size2,
-            ),
-            actionsIconTheme: IconThemeData(
-              color: Colors.grey.shade100,
-            ),
-          ),
-          bottomAppBarTheme: BottomAppBarTheme(
-            color: Colors.grey.shade900,
-          ),
+        ),
+        bottomAppBarTheme: BottomAppBarTheme(
+          color: Colors.grey.shade900,
         ),
       ),
     );

@@ -1,17 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:tiktok_clone_android/features/videos/widgets/video_button.dart';
-import 'package:tiktok_clone_android/features/videos/widgets/video_comments.dart';
+import 'package:tiktok_clone_android/features/videos/view_models/playback_config_vm.dart';
+import 'package:tiktok_clone_android/features/videos/views/widgets/video_button.dart';
+import 'package:tiktok_clone_android/features/videos/views/widgets/video_comments.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../../common/video_configuration/video_config.dart';
-import '../../../constants/gaps.dart';
-import '../../../constants/sizes.dart';
+import '../../../../constants/gaps.dart';
+import '../../../../constants/sizes.dart';
 
-class VideoPost extends StatefulWidget {
+class VideoPost extends ConsumerStatefulWidget {
   final Function onVideoFinished;
   final int index;
 
@@ -22,10 +22,10 @@ class VideoPost extends StatefulWidget {
   });
 
   @override
-  State<VideoPost> createState() => _VideoPostState();
+  VideoPostState createState() => VideoPostState();
 }
 
-class _VideoPostState extends State<VideoPost>
+class VideoPostState extends ConsumerState<VideoPost>
     with SingleTickerProviderStateMixin {
   late final VideoPlayerController _videoPlayerController;
 
@@ -52,15 +52,15 @@ class _VideoPostState extends State<VideoPost>
     if (kIsWeb) {
       await _videoPlayerController.setVolume(0);
     }
-    _videoPlayerController.play();
-    setState(() {});
     _videoPlayerController.addListener(_onVideoChange);
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
     _initVideoPlayer();
+
     _animationController = AnimationController(
       vsync: this,
       lowerBound: 1.0,
@@ -73,16 +73,30 @@ class _VideoPostState extends State<VideoPost>
   @override
   void dispose() {
     _videoPlayerController.dispose();
+    _animationController.dispose();
     super.dispose();
     widget.onVideoFinished;
+  }
+
+  void _onPlaybackConfigChanged() {
+    if (!mounted) return;
+    final muted = ref.read(playbackConfigProvider).muted;
+    ref.read(playbackConfigProvider.notifier).setMuted(!muted);
+    if (muted) {
+      _videoPlayerController.setVolume(0);
+    } else {
+      _videoPlayerController.setVolume(1);
+    }
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
     if (!mounted) return;
     if (info.visibleFraction == 1 &&
-        !_videoPlayerController.value.isPlaying &&
-        !_isPaused) {
-      _videoPlayerController.play();
+        !_isPaused &&
+        !_videoPlayerController.value.isPlaying) {
+      if (ref.watch(playbackConfigProvider).autoplay) {
+        _videoPlayerController.play();
+      }
     }
     if (_videoPlayerController.value.isPlaying && info.visibleFraction == 0) {
       _onTogglePause();
@@ -167,15 +181,12 @@ class _VideoPostState extends State<VideoPost>
               icon: FaIcon(
                 //provider를 통해 changenotifer에 접근이 가능하다.
                 //그래서 videoconfig에 있는 값에 접근을 할 수 있다.
-                context.watch<VideoConfig>().isMuted
+                ref.watch(playbackConfigProvider).muted
                     ? FontAwesomeIcons.volumeOff
                     : FontAwesomeIcons.volumeHigh,
                 color: Colors.white,
               ),
-              onPressed: () {
-                //context.read메소드는 videoconfig에 있는 메소드에 접근을 할 수 있게 해준다.
-                context.read<VideoConfig>().toggleIsMuted();
-              },
+              onPressed: _onPlaybackConfigChanged,
             ),
           ),
           Positioned(

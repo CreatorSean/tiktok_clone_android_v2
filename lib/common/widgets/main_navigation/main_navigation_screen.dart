@@ -8,8 +8,8 @@ import 'package:tiktok_clone_android/common/widgets/main_navigation/widgets/nav_
 import 'package:tiktok_clone_android/common/widgets/main_navigation/widgets/post_video.button.dart';
 import 'package:tiktok_clone_android/features/users/users_profile_screen.dart';
 import 'package:tiktok_clone_android/features/utils.dart';
-import 'package:tiktok_clone_android/features/videos/video_recording_screen.dart';
-import 'package:tiktok_clone_android/features/videos/video_timeline_screen.dart';
+import 'package:tiktok_clone_android/features/videos/views/video_recording_screen.dart';
+import 'package:tiktok_clone_android/features/videos/views/video_timeline_screen.dart';
 
 import '../../../constants/sizes.dart';
 

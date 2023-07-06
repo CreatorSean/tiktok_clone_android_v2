@@ -1,28 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:tiktok_clone_android/common/video_configuration/video_config.dart';
+import 'package:tiktok_clone_android/features/videos/view_models/playback_config_vm.dart';
 
-class SettingScreen extends StatefulWidget {
+//ConsumerWidget을 사용하면 ref를 사용할 수 있음. Data 및 method를 사용할 수 있게 되는 것임.
+class SettingScreen extends ConsumerWidget {
   const SettingScreen({super.key});
 
   @override
-  State<SettingScreen> createState() => _SettingScreenState();
-}
-
-class _SettingScreenState extends State<SettingScreen> {
-  bool _isNotifications = false;
-
-  void _onNotificationsChanged(bool? newValue) {
-    if (newValue == null) return;
-    setState(() {
-      _isNotifications = newValue;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  //WidgetRef ref는 provider를 불러올 수 있는 references임
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -32,18 +20,30 @@ class _SettingScreenState extends State<SettingScreen> {
       body: ListView(
         children: [
           SwitchListTile.adaptive(
-            //provider를 통해 bool 변수에 접근하는 방법
-            value: context.watch<VideoConfig>().isMuted,
-            //provider를 통해 videoconfig의 메소드에 접근하는 방법
-            onChanged: (value) => context.read<VideoConfig>().toggleIsMuted(),
+            value: ref.watch(playbackConfigProvider).muted,
+            onChanged: (value) {
+              //ref.read의 괄호 안에 provider.notifier를 하면 provider가 expose하는 데이터는 필요 없고 notifier class에 접근하고 싶다는 뜻임.
+              //class의 method에 접근하려면 provider.notifier를 하면 됨
+              ref.read(playbackConfigProvider.notifier).setMuted(value);
+            },
             title: const Text(
-              "Auto Mute",
+              "Muted video",
             ),
-            subtitle: const Text("Videos muted by default."),
+            subtitle: const Text("Videos will be muted by default."),
           ),
           SwitchListTile.adaptive(
-            value: _isNotifications,
-            onChanged: _onNotificationsChanged,
+            value: ref.watch(playbackConfigProvider).autoplay,
+            onChanged: (value) {
+              ref.read(playbackConfigProvider.notifier).setAutoplay(value);
+            },
+            title: const Text(
+              "Autoplay",
+            ),
+            subtitle: const Text("Videos will start playing automatically."),
+          ),
+          SwitchListTile.adaptive(
+            value: false,
+            onChanged: (value) {},
             title: const Text(
               "Enable notifications",
             ),
@@ -51,8 +51,8 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           CheckboxListTile(
             activeColor: Colors.black,
-            value: _isNotifications,
-            onChanged: _onNotificationsChanged,
+            value: false,
+            onChanged: (value) {},
             title: const Text(
               "Marketing emails",
             ),

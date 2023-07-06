@@ -7,7 +7,8 @@ import 'package:tiktok_clone_android/features/inbox/activity_screen.dart';
 import 'package:tiktok_clone_android/features/inbox/chat_detail_scteen.dart';
 import 'package:tiktok_clone_android/features/inbox/chats_screen.dart';
 import 'package:tiktok_clone_android/features/onboarding/interests_screen.dart';
-import 'package:tiktok_clone_android/features/videos/video_recording_screen.dart';
+
+import 'features/videos/views/video_recording_screen.dart';
 
 final router = GoRouter(
   initialLocation: "/inbox",
