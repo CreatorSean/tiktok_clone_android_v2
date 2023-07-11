@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone_android/constants/gaps.dart';
 import 'package:tiktok_clone_android/features/authentication/birthday_screen.dart';
+import 'package:tiktok_clone_android/features/authentication/view_models/signup_view_model.dart';
 
 import '../../constants/sizes.dart';
 import 'widgets/form_button.dart';
 
-class PasswordScreen extends StatefulWidget {
+class PasswordScreen extends ConsumerStatefulWidget {
   const PasswordScreen({super.key});
 
   @override
-  State<PasswordScreen> createState() => _PasswordScreenState();
+  ConsumerState<PasswordScreen> createState() => _PasswordScreenState();
 }
 
-class _PasswordScreenState extends State<PasswordScreen> {
+class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   final TextEditingController _passwordStrController = TextEditingController();
 
   String _passwordStr = "";
@@ -47,6 +49,9 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
   void _onSubmit() {
     if (!_isPasswordValid()) return;
+    //signUpForm Provider를 사용하여 state의 정보를 불러오고 state정보 뒤에 password를 저장한다.
+    final state = ref.read(signUpForm.notifier).state;
+    ref.read(signUpForm.notifier).state = {...state, "password": _passwordStr};
     Navigator.push(
       context,
       MaterialPageRoute(

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone_android/constants/gaps.dart';
+import 'package:tiktok_clone_android/features/authentication/view_models/signup_view_model.dart';
 
 import '../../constants/sizes.dart';
 import 'password_screen.dart';
 import 'widgets/form_button.dart';
+
+//account를 만들 때 username이나 birthday가 필요하지 않기에 account creation을 email_screen.dart에서 진행하는 것이다.
 
 class EmailScreenArgs {
   final String usernameStr;
@@ -13,7 +17,7 @@ class EmailScreenArgs {
   });
 }
 
-class EmailScreen extends StatefulWidget {
+class EmailScreen extends ConsumerStatefulWidget {
   final String usernameStr;
 
   const EmailScreen({
@@ -22,10 +26,10 @@ class EmailScreen extends StatefulWidget {
   });
 
   @override
-  State<EmailScreen> createState() => _EmailScreenState();
+  ConsumerState<EmailScreen> createState() => _EmailScreenState();
 }
 
-class _EmailScreenState extends State<EmailScreen> {
+class _EmailScreenState extends ConsumerState<EmailScreen> {
   final TextEditingController _emailStrController = TextEditingController();
 
   String _emailStr = "";
@@ -64,6 +68,8 @@ class _EmailScreenState extends State<EmailScreen> {
 
   void _onSubmit() {
     if (_emailStr.isEmpty || _isEmailValid() != null) return;
+    //signUpForm Provider를 사용하여 email을 생성하면 해당 정보를 저장한다.
+    ref.read(signUpForm.notifier).state = {"email": _emailStr};
     Navigator.push(
       context,
       MaterialPageRoute(
