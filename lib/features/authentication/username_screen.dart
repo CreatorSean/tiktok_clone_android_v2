@@ -20,6 +20,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
 
   void _onNextTap() {
     if (_usernameStr.isEmpty) return;
+
     Navigator.push(
       context,
       MaterialPageRoute(

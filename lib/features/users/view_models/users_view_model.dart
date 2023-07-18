@@ -31,6 +31,6 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
   }
 }
 
-final usersProvider = AsyncNotifierProvider(
+final usersProvider = AsyncNotifierProvider<UsersViewModel, UserProfileModel>(
   () => UsersViewModel(),
 );

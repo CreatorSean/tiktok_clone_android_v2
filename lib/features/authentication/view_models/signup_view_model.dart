@@ -25,23 +25,18 @@ class SignUpViewModel extends AsyncNotifier<void> {
     final form = ref.read(signUpForm);
     final users = ref.read(usersProvider.notifier);
     //AsyncValue.guard는 error가 있으면 error를 expose하고 error가 없다면 해당 data를 저장하고 아무것도 return하지 않음
-    state = await AsyncValue.guard(
+    state = await AsyncValue.guard(() async {
       //AuthenticationRepository의 signUp을 통해 user account를 creation함
-      () async {
-        final userCredential = await _authRepo.emailSignUp(
-          form["email"],
-          form["password"],
-        );
-
-        await users.createProfile(userCredential);
-      },
-    );
+      final userCredential = await _authRepo.emailSignUp(
+        form["email"],
+        form["password"],
+      );
+      await users.createProfile(userCredential);
+    });
     if (state.hasError) {
-      if (state.hasError) {
-        showFirebaseErrorSnack(context, state.error);
-      } else {
-        context.goNamed(InterestsScreen.routeName);
-      }
+      showFirebaseErrorSnack(context, state.error);
+    } else {
+      context.goNamed(InterestsScreen.routeName);
     }
   }
 }

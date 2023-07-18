@@ -7,7 +7,7 @@ class UserRepository {
 
   Future<void> createProfile(UserProfileModel profile) async {
     //signUp에서 user로부터 받은 userProfile 정보를 firestore에 저장하는 방법이다.
-    //users collection에 사용자의 id에 Json형태로 저장하는 것이다.
+    //users collection에 사용자의 id에 맞는 Data로 UserProfileModel 형식 Data를 Json형태로 Data를 저장하는 것이다.
     await _db.collection("users").doc(profile.uid).set(profile.toJson());
   }
 }

@@ -16,8 +16,8 @@ class AuthenticationRepository {
   //단순히 백엔드에 요청하는 것이 아니라 UI와 백엔드 간의 연결 같은 것이다.
   //즉 변화를 바로 알 수 있는 것이다.
 
+  //firebase에 Email과 Password로 user를 creation함
   Future<UserCredential> emailSignUp(String email, String password) async {
-    //firebase에 Email과 Password로 user를 creation함
     return await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,

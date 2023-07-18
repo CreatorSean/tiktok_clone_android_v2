@@ -21,7 +21,6 @@ class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
   DateTime initialDate = DateTime.now();
 
   void _onNextTap() {
-    //context.goNamed(InterestsScreen.routeName);
     ref.read(signUpProvider.notifier).signUp(context);
   }
 
@@ -92,14 +91,12 @@ class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        child: SizedBox(
-          height: 300,
-          child: CupertinoDatePicker(
-            maximumDate: initialDate,
-            initialDateTime: initialDate,
-            mode: CupertinoDatePickerMode.date,
-            onDateTimeChanged: _setTextfieldDate,
-          ),
+        height: 300,
+        child: CupertinoDatePicker(
+          maximumDate: initialDate,
+          initialDateTime: initialDate,
+          mode: CupertinoDatePickerMode.date,
+          onDateTimeChanged: _setTextfieldDate,
         ),
       ),
     );
