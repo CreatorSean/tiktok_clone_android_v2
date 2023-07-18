@@ -16,9 +16,9 @@ class AuthenticationRepository {
   //단순히 백엔드에 요청하는 것이 아니라 UI와 백엔드 간의 연결 같은 것이다.
   //즉 변화를 바로 알 수 있는 것이다.
 
-  Future<void> emailSignUp(String email, String password) async {
+  Future<UserCredential> emailSignUp(String email, String password) async {
     //firebase에 Email과 Password로 user를 creation함
-    await _firebaseAuth.createUserWithEmailAndPassword(
+    return await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -26,6 +26,17 @@ class AuthenticationRepository {
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
+  }
+
+  Future<void> signIn(String email, String password) async {
+    await _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  Future<void> githubSignIn() async {
+    await _firebaseAuth.signInWithProvider(GithubAuthProvider());
   }
 }
 

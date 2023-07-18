@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone_android/constants/gaps.dart';
+import 'package:tiktok_clone_android/features/authentication/view_models/login_view_model.dart';
 import 'package:tiktok_clone_android/features/authentication/widgets/form_button.dart';
 
 import '../../constants/sizes.dart';
-import '../onboarding/interests_screen.dart';
 
-class LoginFormScreen extends StatefulWidget {
+class LoginFormScreen extends ConsumerStatefulWidget {
   const LoginFormScreen({super.key});
 
   @override
-  State<LoginFormScreen> createState() => _LoginFormScreenState();
+  ConsumerState<LoginFormScreen> createState() => _LoginFormScreenState();
 }
 
-class _LoginFormScreenState extends State<LoginFormScreen> {
+class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Map<String, String> formDataMap = {};
@@ -24,7 +24,12 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     if (_formKey.currentState != null) {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
-        context.goNamed(InterestsScreen.routeName);
+        ref.read(loginProvider.notifier).login(
+              formDataMap["email"]!,
+              formDataMap["password"]!,
+              context,
+            );
+        //context.goNamed(InterestsScreen.routeName);
         //textformfield의 onsaved 함수를 콜백하게됨
       }
     }
@@ -83,8 +88,8 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
               Gaps.v28,
               GestureDetector(
                 onTap: _onSubmitTap,
-                child: const FormButton(
-                  isDisabled: false,
+                child: FormButton(
+                  isDisabled: ref.watch(loginProvider).isLoading,
                 ),
               ),
             ],
