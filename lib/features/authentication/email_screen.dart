@@ -69,7 +69,8 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
   void _onSubmit() {
     if (_emailStr.isEmpty || _isEmailValid() != null) return;
     //signUpForm Provider를 사용하여 email을 생성하면 해당 정보를 저장한다.
-    ref.read(signUpForm.notifier).state = {"email": _emailStr};
+    final state = ref.read(signUpForm.notifier).state;
+    ref.read(signUpForm.notifier).state = {...state, "email": _emailStr};
     Navigator.push(
       context,
       MaterialPageRoute(

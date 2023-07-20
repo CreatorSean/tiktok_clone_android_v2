@@ -10,6 +10,11 @@ class UserRepository {
     //users collection에 사용자의 id에 맞는 Data로 UserProfileModel 형식 Data를 Json형태로 Data를 저장하는 것이다.
     await _db.collection("users").doc(profile.uid).set(profile.toJson());
   }
+
+  Future<Map<String, dynamic>?> findProfile(String uid) async {
+    final doc = await _db.collection("users").doc(uid).get();
+    return doc.data();
+  }
 }
 
 final userRepo = Provider((ref) => UserRepository());

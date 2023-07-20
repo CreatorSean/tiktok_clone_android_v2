@@ -19,9 +19,15 @@ class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
   final TextEditingController _birthdayController = TextEditingController();
 
   DateTime initialDate = DateTime.now();
+  late final String bio;
 
   void _onNextTap() {
     ref.read(signUpProvider.notifier).signUp(context);
+    final state = ref.read(signUpForm.notifier).state;
+    ref.read(signUpForm.notifier).state = {
+      ...state,
+      "bio": _birthdayController.value
+    };
   }
 
   @override
