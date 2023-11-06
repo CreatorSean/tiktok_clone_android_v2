@@ -6,7 +6,7 @@ import 'package:tiktok_clone_android/features/discover/discover_screen.dart';
 import 'package:tiktok_clone_android/features/inbox/inbox_screen.dart';
 import 'package:tiktok_clone_android/common/widgets/main_navigation/widgets/nav_tab.dart';
 import 'package:tiktok_clone_android/common/widgets/main_navigation/widgets/post_video.button.dart';
-import 'package:tiktok_clone_android/features/users/users_profile_screen.dart';
+import 'package:tiktok_clone_android/features/users/views/users_profile_screen.dart';
 import 'package:tiktok_clone_android/features/utils.dart';
 import 'package:tiktok_clone_android/features/videos/views/video_recording_screen.dart';
 import 'package:tiktok_clone_android/features/videos/views/video_timeline_screen.dart';
