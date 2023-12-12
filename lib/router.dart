@@ -12,11 +12,11 @@ import 'package:tiktok_clone_android/features/onboarding/interests_screen.dart';
 
 import 'features/videos/views/video_recording_screen.dart';
 
+//원래는 birthdayScreen에서 SignUp을 하면 home으로 redirect를 진행해야 했는데 user상태를 stream할 수 없었기에 screen의 redirect가 이뤄지지 않았다.
+//하지만 authStateStream Provider를 통해서 실시간으로 user의 인증 상태를 확인할 수 있어서 화면을 rebuild할 수 있다.
+//ref.watch(authState);
 final routerProvider = Provider(
   (ref) {
-    //원래는 birthdayScreen에서 SignUp을 하면 home으로 redirect를 진행해야 했는데 user상태를 stream할 수 없었기에 screen의 redirect가 이뤄지지 않았다.
-    //하지만 authStateStream Provider를 통해서 실시간으로 user의 인증 상태를 확인할 수 있어서 화면을 rebuild할 수 있다.
-    //ref.watch(authState);
     return GoRouter(
       initialLocation: "/home",
       redirect: (context, state) {
